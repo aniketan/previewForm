@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Buffer Now | Preview Before Submit</title>
+</head>
+<body>
+<style>
+body {
+    border: 1px solid transparent;
+    color: 	#808080;
+    font: 15px Calibri,Arial,sans-serif;
+}
+#page {
+    margin: 42px auto 60px;
+    width: 246px;
+}
+#page label,span{
+padding-left:10px;
+ float:left;
+}
+#page [type="radio"] {
+float: left;
+    margin-left: 28px;
+    margin-top: -1px;
+}
+#page span{
+float: left;
+ margin-top: -3px;
+}
+
+#page input {
+clear :right;
+margin: 4px;
+float:right;
+}
+#page select {
+clear: right;
+    float: right;
+    margin: 9px 5px 18px;
+    width: 143px;
+}
+#page fieldset{
+width :340px;
+}
+
+#page [type="checkbox"] {
+float: left;
+ margin: 11px;
+}
+</style>
+<div id="page">
+<form class="mform" id="myform" method="POST" id="myform" action="">
+<fieldset>  
+    <legend>Registeration</legend> 
+	<table cellspacing="0"><tbody>
+	<tr><td>
+<label for="u_name"> Username :</label></td><td>
+<input type="text" name="uname" id="u_name">
+<td>
+</tr>
+<tr><td>
+<label for="u_pwd"> Password :</label></td><td>
+<input type="password" name="uname" id="u_pwd">
+</td></tr>
+<tr><td>
+<label for="u_mail"> Email :</label></td><td>
+<input type="email" name="uname" id="u_mail">
+</td></tr>
+<tr><td>
+<label for="u_country"> Country :</label></td><td>
+<select name="Country" id="u_country"> 
+<option value="" selected="selected">Select Country</option> 
+<option value="United States">United States</option> 
+<option value="United Kingdom">United Kingdom</option> 
+<option value="Afghanistan">Afghanistan</option> 
+</select>
+</td></tr>
+<tr><td>
+<span> Gender :</span></td><td>
+<input type="radio" name="gender" id="male" value="male"><label for="male"> Male</label>
+<input type="radio" name="gender" id="female"  value="female"><label for="female"> Female </label>
+</td></tr>
+<tr><td>
+<label for="subscribe"> Subscribe Us : </label></td><td>
+<input type="checkbox" id="subscribe" name="subscribe" value="yes">
+</td></tr>
+<tr><td></td>
+<td><input type="submit" value="submit"></td></tr>
+</tbody></table>
+</fieldset>
+
+</form>
+
+
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="previewForm/previewForm.css" />
+<script src="previewForm/previewForm.js"></script>
+<script>
+$(document).ready(function() {
+	$('#myform').previewForm();
+});
+</script>
+</body>
+</html>
