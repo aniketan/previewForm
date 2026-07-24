@@ -107,6 +107,33 @@ function policyFor(options: ReviewOptions): SensitivePolicy {
   return options.sensitiveFields ?? "mask";
 }
 
+function isSubmitter(element: HTMLElement | null): element is HTMLButtonElement | HTMLInputElement {
+  if (!element) return false;
+  if (element instanceof HTMLButtonElement) return ["submit", "button", "reset"].includes(element.type);
+  if (element instanceof HTMLInputElement) return ["submit", "image"].includes(element.type);
+  return false;
+}
+
+function shouldAppendSubmitterFallback(form: HTMLFormElement, submitter: HTMLButtonElement | HTMLInputElement): boolean {
+  if (!submitter.name || submitter.disabled || submitter.form !== form) return false;
+  if (submitter instanceof HTMLButtonElement) return submitter.type === "submit";
+  return submitter.type === "submit";
+}
+
+function formDataFor(form: HTMLFormElement, submitter: HTMLElement | null): FormData {
+  const nativeSubmitter = isSubmitter(submitter) ? submitter : null;
+  if (nativeSubmitter) {
+    try {
+      return new FormData(form, nativeSubmitter);
+    } catch {
+      const formData = new FormData(form);
+      if (shouldAppendSubmitterFallback(form, nativeSubmitter)) formData.append(nativeSubmitter.name, nativeSubmitter.value);
+      return formData;
+    }
+  }
+  return new FormData(form);
+}
+
 export function collectEntries(form: HTMLFormElement, options: ReviewOptions = {}): ReviewEntry[] {
   const entries: ReviewEntry[] = [];
   const seenRadioGroups = new Set<string>();
@@ -199,6 +226,6 @@ export function createContext(
     form,
     submitter,
     entries: collectEntries(form, options),
-    formData: new FormData(form)
+    formData: formDataFor(form, submitter)
   };
 }

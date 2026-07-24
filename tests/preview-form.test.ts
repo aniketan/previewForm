@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { attachReview, collectEntries } from "../src/index";
 
 beforeEach(() => { document.body.innerHTML = ""; });
+afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
 describe("collectEntries", () => {
   it("collects native controls, labels, sections and masks sensitive values", () => {
@@ -83,6 +84,43 @@ describe("attachReview", () => {
     form.dispatchEvent(new SubmitEvent("submit", { bubbles: true, cancelable: true, submitter }));
     expect(document.querySelector(".pf-review-panel")).toBeNull();
     expect(reportValidity).toHaveBeenCalledOnce();
+  });
+
+  it("includes the active submitter name and value in the review context FormData", () => {
+    document.body.innerHTML = `<form><input name="title" value="Release notes"><button type="submit" name="intent" value="draft">Save draft</button><button type="submit" name="intent" value="publish">Publish</button></form>`;
+    const form = document.querySelector("form")!;
+    const submitter = form.querySelectorAll<HTMLButtonElement>("button")[1];
+    const controller = attachReview(form);
+    form.dispatchEvent(new SubmitEvent("submit", { bubbles: true, cancelable: true, submitter }));
+    expect(controller.getContext()?.formData.get("title")).toBe("Release notes");
+    expect(controller.getContext()?.formData.get("intent")).toBe("publish");
+  });
+
+  it("does not add unnamed submitters to the review context FormData", () => {
+    document.body.innerHTML = `<form><input name="title" value="Release notes"><button type="submit" value="publish">Publish</button></form>`;
+    const form = document.querySelector("form")!;
+    const submitter = form.querySelector<HTMLButtonElement>("button")!;
+    const controller = attachReview(form);
+    form.dispatchEvent(new SubmitEvent("submit", { bubbles: true, cancelable: true, submitter }));
+    expect(Array.from(controller.getContext()!.formData.entries())).toEqual([["title", "Release notes"]]);
+  });
+
+  it("falls back to appending submitter data when submitter-aware FormData is unavailable", () => {
+    const NativeFormData = globalThis.FormData;
+    class OneArgumentFormData extends NativeFormData {
+      constructor(form?: HTMLFormElement, submitter?: HTMLElement) {
+        if (submitter) throw new TypeError("Submitter-aware FormData is unavailable");
+        super(form);
+      }
+    }
+    vi.stubGlobal("FormData", OneArgumentFormData);
+    document.body.innerHTML = `<form><input name="title" value="Release notes"><button type="submit" name="intent" value="publish">Publish</button></form>`;
+    const form = document.querySelector("form")!;
+    const submitter = form.querySelector<HTMLButtonElement>("button")!;
+    const controller = attachReview(form);
+    form.dispatchEvent(new SubmitEvent("submit", { bubbles: true, cancelable: true, submitter }));
+    expect(controller.getContext()?.formData.get("title")).toBe("Release notes");
+    expect(controller.getContext()?.formData.get("intent")).toBe("publish");
   });
 
   it("supports independent controllers for multiple forms", () => {
