@@ -1,9 +1,11 @@
 # Changelog
 
-## Unreleased
+## 2.0.1 - 2026-07-24
 
+- Included the active submitter name/value in `ReviewContext.formData`.
 - Aggregated same-name checkbox groups into a single review entry.
 - Clarified `mode: "page"` as a page-takeover review flow and added regression coverage for the current behavior.
+- Hardened the npm publish workflow with version preflight checks, explicit provenance publishing, updated GitHub Actions versions, and release documentation.
 
 ## 2.0.0 - 2026-07-24
 

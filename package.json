@@ -1,6 +1,6 @@
 {
   "name": "preview-form",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "An accessible, privacy-aware review step for native HTML forms.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -23,7 +23,12 @@
     },
     "./styles.css": "./dist/styles.css"
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "MIT-LICENSE.txt"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "MIT-LICENSE.txt"
+  ],
   "author": {
     "name": "Rohit Kumar",
     "email": "rohitchowdhary75@gmail.com"
@@ -37,7 +42,14 @@
   "bugs": {
     "url": "https://github.com/aniketan/previewForm/issues"
   },
-  "keywords": ["form", "form-review", "confirmation", "accessible", "privacy", "jquery-plugin"],
+  "keywords": [
+    "form",
+    "form-review",
+    "confirmation",
+    "accessible",
+    "privacy",
+    "jquery-plugin"
+  ],
   "publishConfig": {
     "access": "public",
     "provenance": true
@@ -54,7 +66,9 @@
     "jquery": ">=3.7.0 <5.0.0"
   },
   "peerDependenciesMeta": {
-    "jquery": { "optional": true }
+    "jquery": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
