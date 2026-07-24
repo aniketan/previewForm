@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Aggregated same-name checkbox groups into a single review entry.
+
 ## 2.0.0 - 2026-07-24
 
 - Added a dependency-free TypeScript core.

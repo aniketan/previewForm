@@ -39,6 +39,41 @@ describe("collectEntries", () => {
     expect(entries.find((entry) => entry.name === "topics")?.value).toBe("Forms, Accessibility");
     expect(entries.find((entry) => entry.name === "attachment")?.value).toContain("resume.pdf");
   });
+
+  it("aggregates same-name checkbox groups into one entry", () => {
+    document.body.innerHTML = `<form><fieldset><legend>Preferences</legend>
+      <label><input name="topics" type="checkbox" value="accessibility" checked> Accessibility</label>
+      <label><input name="topics" type="checkbox" value="forms" checked> Forms</label>
+      <label><input name="topics" type="checkbox" value="security"> Security</label>
+    </fieldset></form>`;
+    const entries = collectEntries(document.querySelector("form")!, { includeEmpty: true });
+    expect(entries).toHaveLength(1);
+    expect(entries[0]).toMatchObject({ name: "topics", label: "Topics", value: "accessibility, forms", rawValue: "accessibility, forms", section: "Preferences" });
+  });
+
+  it("handles empty checkbox groups with includeEmpty", () => {
+    document.body.innerHTML = `<form><label><input name="topics" type="checkbox" value="accessibility"> Accessibility</label><label><input name="topics" type="checkbox" value="forms"> Forms</label></form>`;
+    const form = document.querySelector("form")!;
+    expect(collectEntries(form, { includeEmpty: true })).toMatchObject([{ name: "topics", label: "Topics", value: "Not provided", rawValue: "" }]);
+    expect(collectEntries(form, { includeEmpty: false })).toEqual([]);
+  });
+
+  it("preserves single checkbox entries", () => {
+    document.body.innerHTML = `<form><label><input name="updates" type="checkbox" value="yes" checked> Product updates</label></form>`;
+    const entries = collectEntries(document.querySelector("form")!, { includeEmpty: true });
+    expect(entries).toHaveLength(1);
+    expect(entries[0]).toMatchObject({ name: "updates", label: "Product updates", value: "yes", rawValue: "yes" });
+  });
+
+  it("uses an explicit label for checkbox groups when provided", () => {
+    document.body.innerHTML = `<form>
+      <label><input name="topics" type="checkbox" value="accessibility" checked data-preview-label="Topics of interest"> Accessibility</label>
+      <label><input name="topics" type="checkbox" value="forms" checked> Forms</label>
+    </form>`;
+    const entries = collectEntries(document.querySelector("form")!, { includeEmpty: true });
+    expect(entries[0].label).toBe("Topics of interest");
+    expect(entries[0].value).toBe("accessibility, forms");
+  });
 });
 
 describe("attachReview", () => {
