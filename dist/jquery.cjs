@@ -104,9 +104,43 @@ function selectedValue(control) {
 function policyFor(options) {
   return options.sensitiveFields ?? "mask";
 }
+function isSubmitter(element2) {
+  if (!element2) return false;
+  if (element2 instanceof HTMLButtonElement) return ["submit", "button", "reset"].includes(element2.type);
+  if (element2 instanceof HTMLInputElement) return ["submit", "image"].includes(element2.type);
+  return false;
+}
+function shouldAppendSubmitterFallback(form, submitter) {
+  if (!submitter.name || submitter.disabled || submitter.form !== form) return false;
+  if (submitter instanceof HTMLButtonElement) return submitter.type === "submit";
+  return submitter.type === "submit";
+}
+function formDataFor(form, submitter) {
+  const nativeSubmitter = isSubmitter(submitter) ? submitter : null;
+  if (nativeSubmitter) {
+    try {
+      return new FormData(form, nativeSubmitter);
+    } catch {
+      const formData = new FormData(form);
+      if (shouldAppendSubmitterFallback(form, nativeSubmitter)) formData.append(nativeSubmitter.name, nativeSubmitter.value);
+      return formData;
+    }
+  }
+  return new FormData(form);
+}
+function isCollectableCheckbox(candidate) {
+  const input = candidate;
+  return input.type === "checkbox" && !input.disabled && input.dataset.previewIgnore === void 0;
+}
+function checkboxGroup(form, name) {
+  return Array.from(form.elements).filter(
+    (candidate) => isCollectableCheckbox(candidate) && (candidate.name || candidate.id || "answer") === name
+  );
+}
 function collectEntries(form, options = {}) {
   const entries = [];
   const seenRadioGroups = /* @__PURE__ */ new Set();
+  const seenCheckboxGroups = /* @__PURE__ */ new Set();
   for (const element2 of Array.from(form.elements)) {
     const control = element2;
     if (!CONTROL_TYPES.has(control.tagName)) continue;
@@ -130,6 +164,20 @@ function collectEntries(form, options = {}) {
       entries.push(makeEntry(source, name, selected2.raw, selected2.files, options));
       continue;
     }
+    if (type === "checkbox") {
+      const group = checkboxGroup(form, name);
+      if (group.length > 1) {
+        if (seenCheckboxGroups.has(name)) continue;
+        seenCheckboxGroups.add(name);
+        const checked = group.filter((candidate) => candidate.checked);
+        if (!checked.length && !options.includeEmpty) continue;
+        const source = checked[0] ?? group[0];
+        const raw = checked.map((candidate) => selectedValue(candidate).raw).filter(Boolean).join(", ");
+        const label = options.labelResolver || source.getAttribute("data-preview-label") ? void 0 : titleFromName(name);
+        entries.push(makeEntry(source, name, raw, void 0, options, label));
+        continue;
+      }
+    }
     const selected = selectedValue(control);
     if (selected.files?.length && (options.files ?? "metadata") === "omit") continue;
     if (!selected.raw && !options.includeEmpty) continue;
@@ -138,14 +186,14 @@ function collectEntries(form, options = {}) {
   }
   return entries;
 }
-function makeEntry(control, name, rawValue, files, options) {
+function makeEntry(control, name, rawValue, files, options, labelOverride) {
   const sensitive = isSensitive(control);
   const sensitivePolicy = policyFor(options);
   if (sensitive && sensitivePolicy === "omit") {
     return {
       control,
       name,
-      label: labelFor(control, options.labelResolver),
+      label: labelOverride ?? labelFor(control, options.labelResolver),
       value: "",
       rawValue,
       section: sectionFor(control, options.sections !== false),
@@ -163,7 +211,7 @@ function makeEntry(control, name, rawValue, files, options) {
   const entry = {
     control,
     name,
-    label: labelFor(control, options.labelResolver),
+    label: labelOverride ?? labelFor(control, options.labelResolver),
     value,
     rawValue,
     section: sectionFor(control, options.sections !== false),
@@ -178,7 +226,7 @@ function createContext(form, submitter, options) {
     form,
     submitter,
     entries: collectEntries(form, options),
-    formData: new FormData(form)
+    formData: formDataFor(form, submitter)
   };
 }
 
@@ -265,7 +313,7 @@ function attachReview(form, providedOptions = {}) {
     closeWithoutCallback();
     context = null;
     restoreFocus(control);
-    control.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (typeof control.scrollIntoView === "function") control.scrollIntoView({ behavior: "smooth", block: "center" });
   };
   const render = () => {
     if (!root || !context) return;

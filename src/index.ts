@@ -98,7 +98,7 @@ export function attachReview(form: HTMLFormElement, providedOptions: ReviewOptio
     closeWithoutCallback();
     context = null;
     restoreFocus(control);
-    control.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (typeof control.scrollIntoView === "function") control.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   const render = () => {

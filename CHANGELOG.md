@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Aggregated same-name checkbox groups into a single review entry.
+- Clarified `mode: "page"` as a page-takeover review flow and added regression coverage for the current behavior.
 
 ## 2.0.0 - 2026-07-24
 
