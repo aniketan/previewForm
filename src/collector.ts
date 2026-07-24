@@ -134,9 +134,21 @@ function formDataFor(form: HTMLFormElement, submitter: HTMLElement | null): Form
   return new FormData(form);
 }
 
+function isCollectableCheckbox(candidate: Element): candidate is HTMLInputElement {
+  const input = candidate as HTMLInputElement;
+  return input.type === "checkbox" && !input.disabled && input.dataset.previewIgnore === undefined;
+}
+
+function checkboxGroup(form: HTMLFormElement, name: string): HTMLInputElement[] {
+  return Array.from(form.elements).filter(
+    (candidate) => isCollectableCheckbox(candidate) && ((candidate as HTMLInputElement).name || candidate.id || "answer") === name
+  ) as HTMLInputElement[];
+}
+
 export function collectEntries(form: HTMLFormElement, options: ReviewOptions = {}): ReviewEntry[] {
   const entries: ReviewEntry[] = [];
   const seenRadioGroups = new Set<string>();
+  const seenCheckboxGroups = new Set<string>();
 
   for (const element of Array.from(form.elements)) {
     const control = element as HTMLElement;
@@ -163,6 +175,21 @@ export function collectEntries(form: HTMLFormElement, options: ReviewOptions = {
       continue;
     }
 
+    if (type === "checkbox") {
+      const group = checkboxGroup(form, name);
+      if (group.length > 1) {
+        if (seenCheckboxGroups.has(name)) continue;
+        seenCheckboxGroups.add(name);
+        const checked = group.filter((candidate) => candidate.checked);
+        if (!checked.length && !options.includeEmpty) continue;
+        const source = checked[0] ?? group[0];
+        const raw = checked.map((candidate) => selectedValue(candidate).raw).filter(Boolean).join(", ");
+        const label = options.labelResolver || source.getAttribute("data-preview-label") ? undefined : titleFromName(name);
+        entries.push(makeEntry(source, name, raw, undefined, options, label));
+        continue;
+      }
+    }
+
     const selected = selectedValue(control);
     if (selected.files?.length && (options.files ?? "metadata") === "omit") continue;
     if (!selected.raw && !options.includeEmpty) continue;
@@ -178,7 +205,8 @@ function makeEntry(
   name: string,
   rawValue: string,
   files: FileSummary[] | undefined,
-  options: ReviewOptions
+  options: ReviewOptions,
+  labelOverride?: string
 ): ReviewEntry {
   const sensitive = isSensitive(control);
   const sensitivePolicy = policyFor(options);
@@ -186,7 +214,7 @@ function makeEntry(
     return {
       control,
       name,
-      label: labelFor(control, options.labelResolver),
+      label: labelOverride ?? labelFor(control, options.labelResolver),
       value: "",
       rawValue,
       section: sectionFor(control, options.sections !== false),
@@ -206,7 +234,7 @@ function makeEntry(
   const entry: ReviewEntry = {
     control,
     name,
-    label: labelFor(control, options.labelResolver),
+    label: labelOverride ?? labelFor(control, options.labelResolver),
     value,
     rawValue,
     section: sectionFor(control, options.sections !== false),

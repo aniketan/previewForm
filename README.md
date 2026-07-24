@@ -24,7 +24,7 @@ For a CDN build, load `dist/styles.css` and `dist/index.iife.js`, then use `Prev
 
 ## Supported behavior
 
-PreviewForm discovers labels, legends, ARIA labels, text inputs, textareas, selects, radio buttons, individual checkboxes, and file metadata. Values are rendered as text. Passwords and sensitive-looking fields are masked by default, while empty optional fields are shown as `Not provided`.
+PreviewForm discovers labels, legends, ARIA labels, text inputs, textareas, selects, radio groups, checkbox groups, and file metadata. Values are rendered as text. Passwords and sensitive-looking fields are masked by default, while empty optional fields are shown as `Not provided`.
 
 PreviewForm follows native form validation rules before opening the review. Forms with `novalidate` and submit buttons with `formnovalidate` can still open the review for draft-style flows, while normal invalid required fields continue to use the browser’s validation UI.
 
