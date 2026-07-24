@@ -1,0 +1,73 @@
+:root {
+  --pf-color-text: #172033;
+  --pf-color-muted: #5c667a;
+  --pf-color-border: #d7dce5;
+  --pf-color-surface: #ffffff;
+  --pf-color-backdrop: rgb(10 18 35 / 0.62);
+  --pf-color-primary: #1769e0;
+  --pf-color-primary-text: #ffffff;
+  --pf-radius: 0.75rem;
+  --pf-shadow: 0 1.5rem 4rem rgb(10 18 35 / 0.24);
+  --pf-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.pf-review-dialog,
+.pf-review-overlay {
+  border: 0;
+  padding: 0;
+  width: min(44rem, calc(100vw - 2rem));
+  max-height: min(42rem, calc(100vh - 2rem));
+  color: var(--pf-color-text);
+  background: transparent;
+  font: 1rem/1.5 var(--pf-font);
+}
+
+.pf-review-dialog::backdrop { background: var(--pf-color-backdrop); }
+.pf-review-overlay {
+  position: fixed;
+  inset: 1rem;
+  z-index: 100000;
+  overflow: auto;
+  margin: auto;
+  padding: 0;
+  background: var(--pf-color-backdrop);
+}
+
+.pf-review-overlay[hidden] { display: none; }
+.pf-review-panel {
+  overflow: auto;
+  max-height: inherit;
+  border: 1px solid var(--pf-color-border);
+  border-radius: var(--pf-radius);
+  background: var(--pf-color-surface);
+  box-shadow: var(--pf-shadow);
+}
+.pf-review-header,
+.pf-review-body,
+.pf-review-footer { padding: 1.25rem 1.5rem; }
+.pf-review-header { border-bottom: 1px solid var(--pf-color-border); }
+.pf-review-title { margin: 0; font-size: clamp(1.35rem, 3vw, 1.75rem); line-height: 1.2; }
+.pf-review-description { margin: 0.5rem 0 0; color: var(--pf-color-muted); }
+.pf-review-section + .pf-review-section { margin-top: 1.5rem; }
+.pf-review-section-title { margin: 0 0 0.5rem; font-size: 1rem; }
+.pf-review-list { margin: 0; border-top: 1px solid var(--pf-color-border); }
+.pf-review-row { display: grid; grid-template-columns: minmax(8rem, 1fr) minmax(10rem, 2fr) auto; gap: 1rem; align-items: start; padding: 0.85rem 0; border-bottom: 1px solid var(--pf-color-border); }
+.pf-review-label { font-weight: 650; }
+.pf-review-value { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pf-review-edit { border: 0; padding: 0.15rem 0.25rem; color: var(--pf-color-primary); background: transparent; text-decoration: underline; cursor: pointer; }
+.pf-review-footer { display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--pf-color-border); }
+.pf-review-footer button { border: 1px solid var(--pf-color-primary); border-radius: 0.45rem; padding: 0.65rem 1rem; font: inherit; cursor: pointer; }
+.pf-review-cancel { color: var(--pf-color-primary); background: transparent; }
+.pf-review-confirm { color: var(--pf-color-primary-text); background: var(--pf-color-primary); }
+.pf-review-footer button:focus-visible,
+.pf-review-edit:focus-visible { outline: 3px solid rgb(23 105 224 / 0.35); outline-offset: 3px; }
+
+@media (max-width: 38rem) {
+  .pf-review-dialog,
+  .pf-review-overlay { width: calc(100vw - 1rem); max-height: calc(100vh - 1rem); }
+  .pf-review-header, .pf-review-body, .pf-review-footer { padding: 1rem; }
+  .pf-review-row { grid-template-columns: 1fr; gap: 0.25rem; }
+  .pf-review-edit { justify-self: start; }
+  .pf-review-footer { flex-direction: column-reverse; }
+  .pf-review-footer button { width: 100%; }
+}

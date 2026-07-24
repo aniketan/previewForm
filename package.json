@@ -1,0 +1,69 @@
+{
+  "name": "preview-form",
+  "version": "2.0.0",
+  "description": "An accessible, privacy-aware review step for native HTML forms.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/index.iife.js",
+  "jsdelivr": "./dist/index.iife.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./jquery": {
+      "types": "./dist/jquery.d.ts",
+      "import": "./dist/jquery.js",
+      "require": "./dist/jquery.cjs",
+      "default": "./dist/jquery.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": ["dist", "README.md", "CHANGELOG.md", "MIT-LICENSE.txt"],
+  "author": {
+    "name": "Rohit Kumar",
+    "email": "rohitchowdhary75@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aniketan/previewForm.git"
+  },
+  "homepage": "https://github.com/aniketan/previewForm#readme",
+  "bugs": {
+    "url": "https://github.com/aniketan/previewForm/issues"
+  },
+  "keywords": ["form", "form-review", "confirmation", "accessible", "privacy", "jquery-plugin"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly && node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "peerDependencies": {
+    "jquery": ">=3.7.0 <5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "jquery": { "optional": true }
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/jquery": "^4.0.1",
+    "@types/jsdom": "^21.1.7",
+    "esbuild": "^0.25.0",
+    "jquery": "^4.0.0",
+    "jsdom": "^26.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}

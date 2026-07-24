@@ -1,107 +1,71 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Buffer Now | Preview Before Submit</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PreviewForm 2.0 — Check Before Send</title>
+  <link rel="stylesheet" href="dist/styles.css">
+  <style>
+    body { max-width: 56rem; margin: 0 auto; padding: 2rem 1rem; color: #172033; font: 1rem/1.5 system-ui, sans-serif; }
+    form { display: grid; gap: 1rem; max-width: 38rem; }
+    label { display: grid; gap: .35rem; font-weight: 650; }
+    input, select, textarea, button { font: inherit; padding: .65rem .75rem; }
+    select[multiple] { min-height: 7rem; }
+    fieldset { display: grid; gap: 1rem; border: 1px solid #d7dce5; border-radius: .75rem; padding: 1rem; }
+    fieldset label:has(input[type=checkbox]), fieldset label:has(input[type=radio]) { display: flex; align-items: center; font-weight: 400; }
+    fieldset input[type=checkbox], fieldset input[type=radio] { width: auto; margin-right: .5rem; }
+    .hint { color: #5c667a; }
+  </style>
 </head>
 <body>
-<style>
-body {
-    border: 1px solid transparent;
-    color: 	#808080;
-    font: 15px Calibri,Arial,sans-serif;
-}
-#page {
-    margin: 42px auto 60px;
-    width: 246px;
-}
-#page label,span{
-padding-left:10px;
- float:left;
-}
-#page [type="radio"] {
-float: left;
-    margin-left: 28px;
-    margin-top: -1px;
-}
-#page span{
-float: left;
- margin-top: -3px;
-}
-
-#page input {
-clear :right;
-margin: 4px;
-float:right;
-}
-#page select {
-clear: right;
-    float: right;
-    margin: 9px 5px 18px;
-    width: 143px;
-}
-#page fieldset{
-width :340px;
-}
-
-#page [type="checkbox"] {
-float: left;
- margin: 11px;
-}
-</style>
-<div id="page">
-<form class="mform" id="myform" method="POST" id="myform" action="">
-<fieldset>  
-    <legend>Registeration</legend> 
-	<table cellspacing="0"><tbody>
-	<tr><td>
-<label for="u_name"> Username :</label></td><td>
-<input type="text" name="uname" id="u_name">
-<td>
-</tr>
-<tr><td>
-<label for="u_pwd"> Password :</label></td><td>
-<input type="password" name="uname" id="u_pwd">
-</td></tr>
-<tr><td>
-<label for="u_mail"> Email :</label></td><td>
-<input type="email" name="uname" id="u_mail">
-</td></tr>
-<tr><td>
-<label for="u_country"> Country :</label></td><td>
-<select name="Country" id="u_country"> 
-<option value="" selected="selected">Select Country</option> 
-<option value="United States">United States</option> 
-<option value="United Kingdom">United Kingdom</option> 
-<option value="Afghanistan">Afghanistan</option> 
-</select>
-</td></tr>
-<tr><td>
-<span> Gender :</span></td><td>
-<input type="radio" name="gender" id="male" value="male"><label for="male"> Male</label>
-<input type="radio" name="gender" id="female"  value="female"><label for="female"> Female </label>
-</td></tr>
-<tr><td>
-<label for="subscribe"> Subscribe Us : </label></td><td>
-<input type="checkbox" id="subscribe" name="subscribe" value="yes">
-</td></tr>
-<tr><td></td>
-<td><input type="submit" value="submit"></td></tr>
-</tbody></table>
-</fieldset>
-
-</form>
-
-
-</div>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<link rel="stylesheet" type="text/css" href="previewForm/previewForm.css" />
-<script src="previewForm/previewForm.js"></script>
-<script>
-$(document).ready(function() {
-	$('#myform').previewForm();
-});
-</script>
+  <main>
+    <h1>Check Before Send</h1>
+    <p class="hint">A modern, privacy-aware review step for ordinary HTML forms. Try keyboard navigation, edit links, empty fields, and the masked password.</p>
+    <form id="demo-form" data-preview-section="Application details" action="#submitted" method="post" enctype="multipart/form-data">
+      <label for="name">Full name <input id="name" name="name" required autocomplete="name"></label>
+      <label for="email">Email <input id="email" name="email" type="email" value="ada@example.com" required autocomplete="email"></label>
+      <label for="phone">Phone <input id="phone" name="phone" type="tel" value="+44 20 7946 0958" autocomplete="tel"></label>
+      <label for="website">Website <input id="website" name="website" type="url" value="https://example.com"></label>
+      <label for="search">Search <input id="search" name="search" type="search" value="form review"></label>
+      <label for="age">Age <input id="age" name="age" type="number" value="36" min="1" max="120"></label>
+      <label for="preferred-date">Preferred date <input id="preferred-date" name="preferred-date" type="date" value="2026-07-24"></label>
+      <label for="preferred-time">Preferred time <input id="preferred-time" name="preferred-time" type="time" value="10:30"></label>
+      <label for="billing-month">Billing month <input id="billing-month" name="billing-month" type="month" value="2026-07"></label>
+      <label for="reporting-week">Reporting week <input id="reporting-week" name="reporting-week" type="week" value="2026-W30"></label>
+      <label for="appointment">Appointment <input id="appointment" name="appointment" type="datetime-local" value="2026-07-24T10:30"></label>
+      <label for="password">Password <input id="password" name="password" type="password" value="keep-this-private"></label>
+      <label for="country">Country
+        <select id="country" name="country"><option value="">Choose one</option><option selected>United Kingdom</option><option>India</option><option>United States</option></select>
+      </label>
+      <label for="topics">Topics of interest
+        <select id="topics" name="topics" multiple size="4">
+          <option value="accessibility" selected>Accessibility</option>
+          <option value="forms">Forms</option>
+          <option value="security">Security</option>
+          <option value="performance">Performance</option>
+        </select>
+      </label>
+      <fieldset data-preview-section="Preferences">
+        <legend>Preferences</legend>
+        <label><input type="radio" name="contact" value="email" checked> Email</label>
+        <label><input type="radio" name="contact" value="phone"> Phone</label>
+        <label><input type="checkbox" name="updates" value="yes"> Send product updates</label>
+      </fieldset>
+      <label for="accent">Accent color <input id="accent" name="accent" type="color" value="#1769e0"></label>
+      <label for="priority">Priority <input id="priority" name="priority" type="range" min="0" max="10" value="7"></label>
+      <label for="attachment">Attachment <input id="attachment" name="attachment" type="file" accept="image/*,.pdf"></label>
+      <label for="notes">Notes <textarea id="notes" name="notes" rows="3"></textarea></label>
+      <input type="hidden" name="source" value="preview-form-demo" data-preview-include="true">
+      <output name="status" data-preview-label="Application status">Ready to review</output>
+      <button type="submit">Review before sending</button>
+    </form>
+  </main>
+  <script src="dist/index.iife.js"></script>
+  <script>
+    PreviewForm.attachReview(document.querySelector('#demo-form'), {
+      confirmLabel: 'Send application',
+      cancelLabel: 'Keep editing'
+    });
+  </script>
 </body>
 </html>
