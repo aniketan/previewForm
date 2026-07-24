@@ -30,7 +30,7 @@ PreviewForm follows native form validation rules before opening the review. Form
 
 The `sensitiveFields` option controls what is displayed in the preview UI. It is not a sanitized security boundary for lifecycle callbacks, `ReviewContext.formData`, or code that directly inspects form controls.
 
-`mode: "page"` currently uses an overlay-style review flow that hides the original form while the review is visible. A fuller inline/page renderer is planned for a follow-up release.
+`mode: "page"` is currently a page-takeover flow: it hides the original form while an overlay-style review is visible, then restores the form when the user cancels or chooses a field to edit. A true inline page renderer is planned for a future minor release.
 
 Add field-level policy with `data-preview-ignore`, `data-preview-label`, `data-preview-mask`, and `data-preview-section`.
 

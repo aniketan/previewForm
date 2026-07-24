@@ -178,6 +178,29 @@ describe("attachReview", () => {
     expect(document.querySelector(".pf-review-panel")).not.toBeNull();
   });
 
+  it("documents page mode as a page-takeover review flow", () => {
+    document.body.innerHTML = `<form><label for="name">Name</label><input id="name" name="name" value="Ada"><button type="submit">Send</button></form>`;
+    const form = document.querySelector("form")!;
+    const controller = attachReview(form, { mode: "page" });
+    controller.open();
+    const review = document.querySelector<HTMLElement>(".pf-review-overlay")!;
+    expect(form.hidden).toBe(true);
+    expect(review.hidden).toBe(false);
+    expect(review.getAttribute("role")).toBe("dialog");
+    controller.close();
+    expect(form.hidden).toBe(false);
+    expect(review.hidden).toBe(true);
+  });
+
+  it("restores the form when editing from page mode", () => {
+    document.body.innerHTML = `<form><label for="name">Name</label><input id="name" name="name" value="Ada"><button type="submit">Send</button></form>`;
+    const form = document.querySelector("form")!;
+    attachReview(form, { mode: "page" }).open();
+    document.querySelector<HTMLButtonElement>(".pf-review-edit")!.click();
+    expect(form.hidden).toBe(false);
+    expect(document.querySelector<HTMLElement>(".pf-review-overlay")!.hidden).toBe(true);
+  });
+
   it("allows application submit handlers only after confirmation", () => {
     document.body.innerHTML = `<form><input name="name" value="Ada"><button type="submit">Send</button></form>`;
     const form = document.querySelector("form")!;
